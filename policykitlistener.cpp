@@ -12,6 +12,7 @@
 
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <KX11Extras>
 
 #include <PolkitQt1/ActionDescription>
 #include <PolkitQt1/Agent/Session>
@@ -117,7 +118,9 @@ void PolicyKitListener::initiateAuthentication(const QString &actionId,
 
     m_dialog->show();
 
-    if (!activationToken.isEmpty()) {
+    if (KWindowSystem::isPlatformX11()) {
+        KX11Extras::forceActiveWindow(m_dialog->windowHandle()->winId());
+    } else if (!activationToken.isEmpty()) {
         handleWaylandActivation(actionId, activationToken);
     }
 
